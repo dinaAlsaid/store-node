@@ -26,8 +26,9 @@ class StoreCollection {
     let id = _id ? { _id } : {};
     return this.Model.find(id);
   }
-  update(id, reqBody) {
-    let record = this.Model.find({ _id: id })[0];
+  async update(id, reqBody) {
+    let record = await this.Model.find({ _id: id });
+    console.log(record);
     if (record) {
       record = { ...record, ...reqBody };
       return Promise.resolve(this.Model.findOneAndUpdate(record._id, record, { new: true }));
