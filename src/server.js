@@ -1,13 +1,13 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 
-const authenticationRouter = require('./services/authentication/routes/authrouter');
+const authenticationRouter = require("./lib/routes/authRouter");
 
 
 
 const corsOptions = {
-  origin: '*', //for demo purposes only
+  origin: "*", //for demo purposes only
   credentials: true,
   optionSuccessStatus: 200,
 };
@@ -16,7 +16,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // ----- routes-------
-app.use('/users', authenticationRouter);
+app.use("/users", authenticationRouter);
 
 
 module.exports = {

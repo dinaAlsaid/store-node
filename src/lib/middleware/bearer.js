@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
-const userCollection = require('../models/user/user.collection');
+const userCollection = require("../models/user/user.collection");
 
 module.exports = (req, res, next) => {
   //checks for token
   if (!req.headers.authorization) {
-    next('UnAuthorized');
+    next("UnAuthorized");
   } else {
-    const token = req.headers.authorization.split(' ').pop();
+    const token = req.headers.authorization.split(" ").pop();
     userCollection
       .authenticateJWT(token)
       .then((user) => {
@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
         next();
       })
       .catch(() => {
-        next('unAuthorized');
+        next("unAuthorized");
       });
   }
 };

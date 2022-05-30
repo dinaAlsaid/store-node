@@ -1,15 +1,15 @@
-'use strict';
-const base64 = require('base-64');
-const userCollection = require('../models/user/user.collection');
+"use strict";
+const base64 = require("base-64");
+const userCollection = require("../models/user/user.collection");
 
 module.exports = (req, res, next) => {
   if (!req.headers.authorization) {
-    next('invalid login');
+    next("invalid login");
   } else {
-    const encodedUserInfo = req.headers.authorization.split(' ').pop();
+    const encodedUserInfo = req.headers.authorization.split(" ").pop();
     const decoded = base64.decode(encodedUserInfo);
 
-    const [username, password] = decoded.split(':');
+    const [username, password] = decoded.split(":");
 
     userCollection
       .authenticate(username, password)
@@ -17,6 +17,6 @@ module.exports = (req, res, next) => {
         req.token = userCollection.generateToken(validUser);
         next();
       })
-      .catch(() => next('Invalid Login'));
+      .catch(() => next("Invalid Login"));
   }
 };

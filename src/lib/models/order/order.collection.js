@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 //basic methods for mostly all the models
-//if a method is not suitable for use it can be overridden in the child collection 
+//if a method is not suitable for use it can be overridden in the child collection
 class Collection {
   constructor(schemaName) {
     this.Model = schemaName;

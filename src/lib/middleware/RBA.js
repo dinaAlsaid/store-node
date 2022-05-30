@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-const userCollection = require('../models/user/user.collection');
+const userCollection = require("../models/user/user.collection");
 
 module.exports = (req, res, next) => {
   //checks for user (from bearer auth middleware)
   if (!req.user) {
-    next('UnAuthorized');
+    next("UnAuthorized");
   } else {
     userCollection
       .rba(req)
@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
         next();
       })
       .catch(() => {
-        next('unAuthorized');
+        next("unAuthorized");
       });
   }
 };
