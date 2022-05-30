@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 
 const authenticationRouter = require("./lib/routes/authRouter");
-
+const storeRouter = require("./lib/routes/storeRouter");
 
 
 const corsOptions = {
@@ -17,6 +17,7 @@ app.use(express.json());
 
 // ----- routes-------
 app.use("/users", authenticationRouter);
+app.use("/store", storeRouter);
 
 
 module.exports = {

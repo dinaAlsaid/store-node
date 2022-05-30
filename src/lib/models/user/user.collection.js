@@ -57,14 +57,32 @@ class userCollection {
     }
   }
 
+  async authenticate(username, password) {
+    try {
+      let record = await this.Model.find({ username });
+      if (record.length !== 0) {
+        const valid = await bcrypt.compare(password, record[0].password);
+        if (!valid) {
+          return Promise.reject();
+        } else {
+          return Promise.resolve(record[0]);
+        }
+      } else {
+        return Promise.reject();
+      }
+    } catch (err) {
+      return err.messsage;
+    }
+  }
+
   async rba(req) {
     let role = req.user.AccountType;
-    console.log(req.path);
+    console.log(req.baseUrl);
 
     if (req.method === "GET") {
       return Promise.resolve();
     } else {
-      if (this.editPermissions[role].includes(req.path)) {
+      if (this.editPermissions[role].includes(req.baseUrl)) {
         return Promise.resolve();
       } else {
         return Promise.reject();
