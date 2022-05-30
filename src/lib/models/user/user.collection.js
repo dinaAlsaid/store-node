@@ -2,6 +2,7 @@
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { Promise } = require("mongoose");
 const UserModel = require("./userSchema");
 const SECRET = process.env.SECRET;
 
@@ -17,8 +18,12 @@ class userCollection {
   async createHash(record) {
     try {
       record.password = await bcrypt.hash(record.password, 5);
-      const newRec = new this.Model(record);
-      return newRec.save();
+      const newRec = new this.Model(record).save();
+      if (newRec) {
+        return Promise.resolve(newRec);
+      } else {
+        return Promise.reject();
+      }
     } catch (err) {
       return err.messsage;
     }
@@ -26,10 +31,14 @@ class userCollection {
 
   generateToken(user) {
     try {
-      const token = jwt.sign({ username: user.username }, SECRET);
-      return token;
+      if (user) {
+        const token = jwt.sign({ username: user.username }, SECRET);
+        return Promise.resolve(token);
+      } else {
+        return Promise.reject();
+      }
     } catch (err) {
-      return err.message;
+      return err;
     }
   }
 

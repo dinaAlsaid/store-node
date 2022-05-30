@@ -10,19 +10,25 @@ const router = express.Router();
 router.post("/signup", signupHandler);
 router.post("/signin", basicAuthMW, signinHandler);
 
-//#endregion 
+//#endregion
 
 //#region HANDLERS ----------------
 function signupHandler(req, res) {
-  user.createHash(req.body).then((data) => {
-    const token = user.generateToken(data);
-    res.json({ token, data });
-  });
+  user
+    .createHash(req.body)
+    .then((data) => {
+      const token = user.generateToken(data);
+      res.status(201);
+      res.json({ token, data });
+    })
+    .catch(() => {
+      res.status(500);
+    });
 }
 
 function signinHandler(req, res) {
   res.json({ token: req.token });
 }
-//#endregion 
+//#endregion
 
 module.exports = router;
