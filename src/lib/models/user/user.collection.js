@@ -86,8 +86,6 @@ class userCollection {
 
   async rba(req) {
     let role = req.user.AccountType;
-    console.log(req.baseUrl);
-
     if (req.method === "GET") {
       return Promise.resolve();
     } else {

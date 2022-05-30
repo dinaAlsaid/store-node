@@ -1,25 +1,43 @@
-'use strict';
-//basic methods for mostly all the models
-//if a method is not suitable for use it can be overridden in the child collection 
-class Collection {
-  constructor(schemaName) {
-    this.Model = schemaName;
+"use strict";
+
+const Schema = require("./storeSchema");
+
+class StoreCollection {
+  constructor() {
+    this.Model = Schema;
   }
+
+  async create(record, user) {
+    let exists = await this.Model.find({ username: user.username });
+
+    if (exists[0]) {
+      return Promise.reject("user already created a store");
+    } else {
+      record.user = user._id;
+      const newRec = new this.Model(record).save();
+      if (newRec) {
+        return Promise.resolve(newRec);
+      }
+    }
+  }
+
   read(_id) {
     //if id exist find by id if not find all
     let id = _id ? { _id } : {};
     return this.Model.find(id);
   }
-  create(record) {
-    const newRec = new this.Model(record);
-    return newRec.save();
-  }
-  update(record) {
-    return this.Model.findOneAndUpdate(record.id, record, { new: true });
+  update(id, reqBody) {
+    let record = this.Model.find({ _id: id })[0];
+    if (record) {
+      record = { ...record, ...reqBody };
+      return Promise.resolve(this.Model.findOneAndUpdate(record._id, record, { new: true }));
+    } else {
+      return Promise.reject("can not find record");
+    }
   }
   delete(_id) {
     return this.Model.findOneAndDelete(_id);
   }
 }
 
-module.exports = Collection;
+module.exports = new StoreCollection();
