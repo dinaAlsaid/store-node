@@ -1,11 +1,11 @@
 'use strict';
 
-const userCollection = require('../services/authentication/models/user.collection');
+const userCollection = require('../models/user/user.collection');
 
 module.exports = (req, res, next) => {
   //checks for token
   if (!req.headers.authorization) {
-    next('UnAuthorized before');
+    next('UnAuthorized');
   } else {
     const token = req.headers.authorization.split(' ').pop();
     userCollection
