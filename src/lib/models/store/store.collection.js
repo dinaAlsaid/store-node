@@ -1,87 +1,25 @@
 'use strict';
-
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const UserModel = require('./storeSchema');
-const SECRET = process.env.SECRET;
-
-
-class userCollection {
-  constructor() {
-    this.Model = UserModel;
+//basic methods for mostly all the models
+//if a method is not suitable for use it can be overridden in the child collection 
+class Collection {
+  constructor(schemaName) {
+    this.Model = schemaName;
   }
-  /* encrypts the password then creates a new user record  */
-  async createHash(record) {
-    try {
-      record.password = await bcrypt.hash(record.password, 5);
-      const newRec = new this.Model(record);
-      return newRec.save();
-
-    } catch (err) {
-
-      return err.messsage;
-    }
+  read(_id) {
+    //if id exist find by id if not find all
+    let id = _id ? { _id } : {};
+    return this.Model.find(id);
   }
-
-  async authenticate(username, password) {
-    try {
-
-      let record = await this.Model.find({ username });
-      // console.log(record);
-      const valid = await bcrypt.compare(password, record[0].password);
-      return record[0];
-    } catch (err) {
-      return err.messsage;
-    }
+  create(record) {
+    const newRec = new this.Model(record);
+    return newRec.save();
   }
-
-  generateToken(user) {
-    try {
-      const token = jwt.sign({ username: user.username }, SECRET);
-      return token;
-
-    } catch (err) {
-
-      return err.message;
-    }
+  update(record) {
+    return this.Model.findOneAndUpdate(record.id, record, { new: true });
   }
-
-  async findAll() {
-    try {
-      let results = await this.Model.find();
-      return results;
-    } catch (err) {
-      return err.message;
-    }
-  }
-
-  async findUser(username) {
-    try {
-
-      let results = await this.Model.findOne({ username });
-      return results;
-    } catch (err) {
-      return err.message;
-    }
-
-  }
-
-  async authenticateJWT(token) {
-    try {
-
-      //find user obj from token 
-      const tokenObj = jwt.verify(token, SECRET);
-      let user = await this.Model.findOne({ username: tokenObj.username });
-      if (user) {
-        return Promise.resolve(user);
-      } else {
-        return Promise.reject();
-      }
-    } catch (err) {
-      return err.message;
-    }
-
+  delete(_id) {
+    return this.Model.findOneAndDelete(_id);
   }
 }
 
-module.exports = new userCollection();
+module.exports = Collection;
