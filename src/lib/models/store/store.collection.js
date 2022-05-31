@@ -28,10 +28,11 @@ class StoreCollection {
   }
   async update(id, reqBody) {
     let record = await this.Model.find({ _id: id });
-    console.log(record);
+
     if (record) {
       record = { ...record, ...reqBody };
-      return Promise.resolve(this.Model.findOneAndUpdate(record._id, record, { new: true }));
+      const newRec = await this.Model.findOneAndUpdate(record._id, record, { new: true });
+      return Promise.resolve(newRec);
     } else {
       return Promise.reject("can not find record");
     }

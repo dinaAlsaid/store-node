@@ -1,25 +1,49 @@
 "use strict";
-//basic methods for mostly all the models
-//if a method is not suitable for use it can be overridden in the child collection
-class Collection {
-  constructor(schemaName) {
-    this.Model = schemaName;
+
+const Schema = require("./orderSchema");
+const storeModel = require("../store/storeSchema");
+
+class StoreCollection {
+  constructor() {
+    this.Model = Schema;
   }
-  read(_id) {
-    //if id exist find by id if not find all
-    let id = _id ? { _id } : {};
-    return this.Model.find(id);
+
+  async create(record, user) {
+    try {
+      record.user = user._id;
+      const newRec = new this.Model(record).save();
+      if (newRec) {
+        return Promise.resolve(newRec);
+      }
+    } catch (err) {
+      return Promise.reject();
+    }
   }
-  create(record) {
-    const newRec = new this.Model(record);
-    return newRec.save();
+
+  read(user) {
+    if (user.AccoutnType === "Shopper") {
+      return Promise.resolve(this.Model.find({ user: user._id }));
+    } else if (user.AccoutnType === "Seller") {
+      let storeName = storeModel.find({ user: user._id });
+      return Promise.resolve(this.Model.find({ store: storeName }));
+    } else {
+      return Promise.resolve(this.Model.find({}));
+    }
   }
-  update(record) {
-    return this.Model.findOneAndUpdate(record.id, record, { new: true });
+  async update(id, reqBody) {
+    let record = await this.Model.find({ _id: id });
+
+    if (record) {
+      record = { ...record, ...reqBody };
+      const newRec = await this.Model.findOneAndUpdate(record._id, record, { new: true });
+      return Promise.resolve(newRec);
+    } else {
+      return Promise.reject("can not find record");
+    }
   }
   delete(_id) {
     return this.Model.findOneAndDelete(_id);
   }
 }
 
-module.exports = Collection;
+module.exports = new StoreCollection();

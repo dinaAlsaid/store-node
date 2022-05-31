@@ -4,6 +4,7 @@ const cors = require("cors");
 
 const authenticationRouter = require("./lib/routes/authRouter");
 const storeRouter = require("./lib/routes/storeRouter");
+const orderRouter = require("./lib/routes/orderRouter");
 
 
 const corsOptions = {
@@ -18,6 +19,7 @@ app.use(express.json());
 // ----- routes-------
 app.use("/users", authenticationRouter);
 app.use("/store", storeRouter);
+app.use("/order", orderRouter);
 
 
 module.exports = {
