@@ -13,8 +13,8 @@ module.exports = (req, res, next) => {
 
     userCollection
       .authenticate(username, password)
-      .then((validUser) => {
-        req.token = userCollection.generateToken(validUser);
+      .then(async (validUser) => {
+        req.token = await userCollection.generateToken(validUser);
         next();
       })
       .catch(() => next("Invalid Login"));

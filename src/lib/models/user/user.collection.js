@@ -33,6 +33,7 @@ class userCollection {
     try {
       if (user) {
         const token = jwt.sign({ username: user.username }, SECRET);
+
         return Promise.resolve(token);
       } else {
         return Promise.reject();
