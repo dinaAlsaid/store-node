@@ -16,13 +16,14 @@ router.post("/signin", basicAuthMW, signinHandler);
 function signupHandler(req, res) {
   user
     .createHash(req.body)
-    .then((data) => {
-      const token = user.generateToken(data);
+    .then(async (data) => {
+      const token = await user.generateToken(data);
       res.status(201);
       res.json({ token, data });
     })
-    .catch(() => {
+    .catch((err) => {
       res.status(500);
+      res.json({ message: err.message });
     });
 }
 
