@@ -32,7 +32,7 @@ class userCollection {
   generateToken(user) {
     try {
       if (user) {
-        const token = jwt.sign({ username: user.username }, SECRET);
+        const token = jwt.sign({ username: user.username, role: user.AccountType }, SECRET);
 
         return Promise.resolve(token);
       } else {

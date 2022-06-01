@@ -8,9 +8,11 @@ class StoreCollection {
     this.Model = Schema;
   }
 
-  async create(record, user) {
+  async create(user) {
     try {
+      let record;
       record.user = user._id;
+
       const newRec = new this.Model(record).save();
       if (newRec) {
         return Promise.resolve(newRec);
@@ -30,6 +32,20 @@ class StoreCollection {
       return Promise.resolve(this.Model.find({}));
     }
   }
+  async getCart(user) {
+    try {
+      let record = await this.Model.find({ _id: user._id, status: "processing" });
+
+      if (record[0]) {
+        return Promise.resolve(record[0]);
+      } else {
+        return Promise.resolve(this.create(user));
+      }
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   async update(id, reqBody) {
     let record = await this.Model.find({ _id: id });
 

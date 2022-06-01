@@ -8,8 +8,8 @@ class StoreCollection {
   }
 
   async create(record, user) {
-    let exists = await this.Model.find({ username: user.username });
-
+    let exists = await this.Model.find({ user: user._id });
+    record.user = user._id;
     if (exists[0]) {
       return Promise.reject("user already created a store");
     } else {

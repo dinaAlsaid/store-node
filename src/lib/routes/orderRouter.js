@@ -13,11 +13,12 @@ router.get("/", bearerAuthMW, RBAuthMW, getAllOrdersHandler); //for user or for 
 router.get("/:id", bearerAuthMW, RBAuthMW, getOrderHandler);
 router.patch("/:id", bearerAuthMW, RBAuthMW, editOrderHandler); //to add products to the cart
 router.delete("/:id", bearerAuthMW, RBAuthMW, deleteOrderHandler);
+router.get("/cart", bearerAuthMW, RBAuthMW, getCartHandler);
 
 //#endregion
 //#region HANDLERS ----------------
 function createOrderHandler(req, res) {
-  Order.create(req.body, req.user)
+  Order.create(req.user)
     .then((data) => {
       res.status(201);
       res.json({ data });
@@ -42,6 +43,18 @@ function getAllOrdersHandler(req, res) {
 
 function getOrderHandler(req, res) {
   Order.read(req.params.id)
+    .then((data) => {
+      res.status(200);
+      res.json({ data });
+    })
+    .catch((message) => {
+      res.status(500);
+      res.json({ message: message });
+    });
+}
+
+function getCartHandler(req, res) {
+  Order.getCart(req.user)
     .then((data) => {
       res.status(200);
       res.json({ data });

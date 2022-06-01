@@ -29,6 +29,7 @@ function createStoreHandler(req, res) {
 }
 
 function getAllStoresHandler(req, res) {
+  console.log(req.data);
   Store.read()
     .then((data) => {
       res.status(200);

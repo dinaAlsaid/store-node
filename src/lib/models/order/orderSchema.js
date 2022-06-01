@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const productSchema= require("../product/productSchema").schema;
 
 const order = mongoose.Schema({
-  orderNumber: { type: Number, required: true, unique: true },
   date: { type: Date, required: false ,default: new Date()},
   status: { type: String, required: true, enum: ["processing", "shipped"], default: "processing" },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
